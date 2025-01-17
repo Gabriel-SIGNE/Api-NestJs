@@ -10,7 +10,7 @@ import { jwtStrategy } from './jwt.strategy';
 
 @Module({
   imports:[
-    PassportModule.register({ defaultStrategy: 'jwt' }),
+    PassportModule,
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,

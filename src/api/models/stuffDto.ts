@@ -1,27 +1,49 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { IsEmpty, IsNotEmpty, IsNumber, IsObject, IsString } from "class-validator";
 import { ObjectId } from "mongoose";
 
-export class stuffDto {
+export class StuffDto {
     // @IsNotEmpty()
     // @IsString()
     // _id: string;
-
-    @IsNotEmpty()
-    @IsString()
-    title: string;
-
-    @IsNotEmpty()
-    @IsString()
-    description: string;
-
-    @IsNotEmpty()
-    @IsString()
-    imageUrl: string;
 
     // @IsEmpty({ message: "You cannot pass user id" })
     // @IsString()
     // userId: string;
 
+    @ApiProperty({
+        description: 'The title of the stuff',
+        example: 'Vintage Guitar',
+        required: true
+    })
+    @IsNotEmpty()
+    @IsString()
+    title: string;
+
+    @ApiProperty({
+        description: 'Detailed description of the stuff',
+        example: 'A beautiful vintage guitar from 1975 in perfect condition',
+        required: true
+    })
+    @IsNotEmpty()
+    @IsString()
+    description: string;
+
+    @ApiProperty({
+        description: 'URL of the image representing the stuff',
+        example: 'https://example.com/images/vintage-guitar.jpg',
+        required: true
+    })
+    @IsNotEmpty()
+    @IsString()
+    imageUrl: string;
+
+    @ApiProperty({
+        description: 'Price of the stuff',
+        example: 1299.99,
+        required: true,
+        type: Number
+    })
     @IsNotEmpty()
     @IsNumber()
     price: number;

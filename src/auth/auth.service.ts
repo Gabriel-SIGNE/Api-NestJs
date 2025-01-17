@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './models/User';
 import { Model } from 'mongoose';
-import { userDto } from './models/UserDto';
+import { UserDto } from './models/UserDto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
@@ -17,7 +17,7 @@ export class AuthService {
     ) { }
 
     // inscription
-    async signUp(userInfo: userDto): Promise<{ token: string }> {
+    async signUp(userInfo: UserDto): Promise<{ token: string }> {
         const { email, password } = userInfo;
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -26,12 +26,17 @@ export class AuthService {
             password: hashedPassword
         });
 
-        const token = await this.jwtService.sign({ userId: user._id });
+        const token = await this.jwtService.sign({ 
+            userId: user._id,
+            secret: jwtConstants.secret,
+            email: user.email,
+            role: 'USER'
+        });
         return { token };
     }
 
     // se connecter
-    async login(userInfo: userDto): Promise<{ token: string, userid: string }> {
+    async login(userInfo: UserDto): Promise<{ token: string, userid: string }> {
         const { email, password } = userInfo;
 
         const user = await this.userModel.findOne({ email });
@@ -46,7 +51,12 @@ export class AuthService {
             throw new UnauthorizedException('Paire login/mot de passe incorrecte 2');
         }
 
-        const token = await this.jwtService.sign({ userId: user._id, secret: jwtConstants.secret });
+        const token = await this.jwtService.sign({
+            userId: user._id,
+            secret: jwtConstants.secret,
+            email: user.email,
+            role: 'USER'
+        });
 
         const userId = String(user._id);
 

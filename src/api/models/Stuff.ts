@@ -17,7 +17,7 @@ export class stuff extends Document {
     @Prop({ required: true })
     imageUrl: string;
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+    @Prop({ type: mongoose.Types.ObjectId, ref: 'User' })
     userId: User;
 
     @Prop({ required: true })

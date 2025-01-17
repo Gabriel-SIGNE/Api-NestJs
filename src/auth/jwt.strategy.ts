@@ -7,7 +7,7 @@ import { Model } from "mongoose";
 import { jwtConstants } from "./constants";
 
 @Injectable()
-export class jwtStrategy extends PassportStrategy(Strategy) {
+export class jwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     constructor(@InjectModel(User.name) private userModel: Model<User>) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -15,14 +15,13 @@ export class jwtStrategy extends PassportStrategy(Strategy) {
         })
     }
 
-    async validate(payload) {
-         const { id } = payload;
-         const user = await this.userModel.findById(id);
+    async validate(payload: Record<string, any>) {
+         const user = await this.userModel.findById(payload.userId);
 
          if(!user) {
             throw new UnauthorizedException('Login first to access this endpoint.');
          }
          
-         return user;
+         return payload;
     }
 }
