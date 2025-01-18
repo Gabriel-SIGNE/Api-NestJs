@@ -1,7 +1,7 @@
 {
     "version": 2,
     "env": {
-        "MONGODB_URI": "@shop_mongo_uri"
+        "MONGODB_URI": "mongodb+srv://wsigne:koudjou01@cluster0.9u4ivkx.mongodb.net/?retryWrites=true&jorw=maity"
     },
     "builds": [
         {
