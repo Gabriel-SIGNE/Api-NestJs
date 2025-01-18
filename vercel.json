@@ -1,5 +1,8 @@
 {
     "version": 2,
+    "env": {
+        "MONGODB_URI": "@shop_mongo_uri"
+    },
     "builds": [
         {
             "src": "src/main.ts",
