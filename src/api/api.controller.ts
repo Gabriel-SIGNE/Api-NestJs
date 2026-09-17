@@ -3,7 +3,7 @@ import { ApiService } from './api.service';
 import { avisDto, StuffDto } from './models/stuffDto';
 import { stuff } from './models/Stuff';
 import { ObjectId } from 'mongoose';
-import { UserJwtAuthGuard } from 'src/auth/user-jwt-auth.guard';
+import { UserJwtAuthGuard } from '../auth/user-jwt-auth.guard';
 import { Request } from 'express';
 import { ApiProperty, ApiTags, ApiOperation, ApiOkResponse, ApiParam, ApiNotFoundResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiUnauthorizedResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 
