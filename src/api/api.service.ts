@@ -11,7 +11,7 @@ export class ApiService {
     constructor(
         @InjectModel(stuff.name) private readonly stuffModel: Model<stuff>,
         @InjectModel(Avis.name) private readonly avisModel: Model<Avis>
-    ) {}
+    ) { }
 
     // recuperation de tous les objects
     async getAllThing(): Promise<stuff[]> {
@@ -21,12 +21,12 @@ export class ApiService {
     // recuperation d'un object
     async getOneThing(thingId: string): Promise<stuff> {
         const thing = await this.stuffModel.findById(thingId);
-        if(!thing) {
+        if (!thing) {
             throw new NotFoundException('Object does not exist');
         }
         return thing;
     }
-    
+
     // poster des object
     async postThing(thing: StuffDto, id: User): Promise<stuff> {
         const data = Object.assign(thing);
@@ -42,6 +42,11 @@ export class ApiService {
         if (stuff.userId.toString() !== id) {
             throw new ForbiddenException('Vous n\'avez pas le droit de supprimer cette object!');
         }
+
+        // 1. Supprime tous les avis liés à ce stuffId
+        await this.avisModel.deleteMany({ stuffId: thingId });
+
+        // 2. Supprime l'objet stuff
         return await this.stuffModel.findByIdAndDelete(thingId);
     }
 
@@ -87,6 +92,6 @@ export class ApiService {
     }
 
     async getAvis(stuffId: ObjectId) {
-        return (await this.avisModel.find()).filter(avis => avis.stuffId == stuffId);
+        return await this.avisModel.find({ stuffId });
     }
 }
