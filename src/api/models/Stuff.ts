@@ -25,6 +25,12 @@ export class stuff extends Document {
 
     @Prop({ default: Date.now() })
     createdAt?: number;
+
+    @Prop({ type: [{ type: mongoose.Types.ObjectId, ref: 'User' }], default: [] })
+    usersLiked: ObjectId[];
+
+    @Prop({ default: 0 })
+    likes: number;
 }
 
 export const stuffSchema = SchemaFactory.createForClass(stuff);

@@ -194,6 +194,46 @@ export class ApiController {
         return this.service.modifyThing(id, thing, req.user['userId']);
     }
 
+    @UseGuards(UserJwtAuthGuard)
+    @ApiBearerAuth()
+    @ApiOperation({
+        summary: 'Like or unlike a stuff item',
+        description: 'Toggles the like for the authenticated user: adds a like if not already liked, removes it if already liked. Requires authentication.'
+    })
+    @ApiParam({
+        name: 'id',
+        description: 'ID of the stuff item',
+        example: '507f1f77bcf86cd799439011'
+    })
+    @ApiOkResponse({
+        description: 'Like toggled successfully',
+        type: StuffDto
+    })
+    @ApiUnauthorizedResponse({
+        description: 'User not authenticated',
+        type: ErrorResponse
+    })
+    @ApiNotFoundResponse({
+        description: 'Stuff item not found'
+    })
+    @Post(':id/like')
+    async like(
+        @Param('id') id: string,
+        @Req() req: Request
+    ): Promise<stuff> {
+        return this.service.likeThing(id, req.user['userId']);
+    }
+
+    @UseGuards(UserJwtAuthGuard)
+    @ApiBearerAuth()
+    @ApiOperation({
+        summary: 'Give an avis on a stuff item',
+        description: 'Creates a new avis. Requires authentication.'
+    })
+    @ApiUnauthorizedResponse({
+        description: 'User not authenticated',
+        type: ErrorResponse
+    })
     @Post('/avis')
     async postAvis( @Body() crateAvis: avisDto) {
         try {

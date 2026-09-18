@@ -29,8 +29,6 @@ export class ApiService {
     
     // poster des object
     async postThing(thing: StuffDto, id: User): Promise<stuff> {
-        // delete thing._id;
-        // delete thing.userId;
         const data = Object.assign(thing);
         return await new this.stuffModel({
             ...data,
@@ -49,15 +47,39 @@ export class ApiService {
 
     // Modification d'un objet
     async modifyThing(id: string, thing: StuffDto, idUser: string): Promise<stuff> {
-        // delete thing._id;
         const stuff = await this.getOneThing(id);
-        if (stuff.userId.toString() !== id) {
+        if (stuff.userId.toString() !== idUser) {
             throw new ForbiddenException('Vous n\'avez pas le droit de modifier cette object!');
         }
         return this.stuffModel.findByIdAndUpdate(id, thing, {
             new: true,
             runValidators: true
         });
+    }
+
+    // Like / unlike un objet (toggle)
+    async likeThing(thingId: string, userId: string): Promise<stuff> {
+        const thing = await this.getOneThing(thingId);
+
+        const alreadyLiked = thing.usersLiked.some(
+            (likedUserId) => likedUserId.toString() === userId
+        );
+
+        if (alreadyLiked) {
+            // l'utilisateur a déjà liké -> on retire le like (unlike)
+            await this.stuffModel.findByIdAndUpdate(thingId, {
+                $pull: { usersLiked: userId },
+                $inc: { likes: -1 }
+            });
+        } else {
+            // l'utilisateur n'a pas encore liké -> on ajoute le like
+            await this.stuffModel.findByIdAndUpdate(thingId, {
+                $push: { usersLiked: userId },
+                $inc: { likes: 1 }
+            });
+        }
+
+        return this.getOneThing(thingId);
     }
 
     async postAvis(avis: avisDto) {
