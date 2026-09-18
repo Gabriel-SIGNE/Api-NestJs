@@ -15,7 +15,7 @@ Consultez cette page `/aide` en premier — elle liste toutes les routes, les co
 
 ## 2. Contraintes techniques
 
-- **HTML, CSS et JavaScript natif uniquement.** Pas de framework (React, Vue, Angular...), pas de librairie CSS (Bootstrap, Tailwind...), pas de librairie JS (jQuery...).
+- **HTML, CSS et JavaScript natif uniquement.** librairie CSS (Bootstrap, Tailwind...) si posible.
 - Les appels réseau se font avec `fetch`.
 - Le stockage des informations de session se fait avec `localStorage`.
 - Le site doit être responsive (utilisable sur mobile et desktop).
