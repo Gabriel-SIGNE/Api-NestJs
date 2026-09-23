@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './models/User';
 import { Model } from 'mongoose';
@@ -20,19 +20,33 @@ export class AuthService {
     async signUp(userInfo: UserDto): Promise<{ token: string }> {
         const { email, password } = userInfo;
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await this.userModel.create({
-            email,
-            password: hashedPassword
-        });
+    const existingUser = await this.userModel.findOne({ email });
+        if (existingUser) {
+            throw new BadRequestException('Un compte existe déjà avec cet email');
+        }
 
-        const token = await this.jwtService.sign({ 
+        try {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const user = await this.userModel.create({
+                email,
+                password: hashedPassword
+            });
+            
+            const token = await this.jwtService.sign({ 
             userId: user._id,
             secret: jwtConstants.secret,
             email: user.email,
             role: 'USER'
         });
-        return { token };
+
+            return { token };
+        } catch (error) {
+            // Erreur MongoDB de clé unique dupliquée (email déjà utilisé)
+            if (error.code === 11000) {
+                throw new BadRequestException('Email already exists');
+            }
+            throw error;
+        }
     }
 
     // se connecter
