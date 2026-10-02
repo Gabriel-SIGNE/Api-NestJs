@@ -50,8 +50,9 @@ export class StuffDto {
 }
 
 export class avisDto {
-    @IsObject({each:true})
-    stuffId: ObjectId;
+    @IsNotEmpty()
+    @IsString()
+    stuffId: string;
 
     @IsNotEmpty()
     @IsString()
